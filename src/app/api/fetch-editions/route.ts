@@ -24,10 +24,38 @@ export async function GET(request: Request) {
 
   const spreadsheets = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SHEET_ID,
-    range: "Edições!A1:D5",
+    range: "Edições!A2:Z10000",
   });
 
-  console.log(spreadsheets.data.values);
+  if (!spreadsheets.data.values) {
+    return new Response("No data found.", { status: 404 });
+  }
 
-  return spreadsheets.data.values;
+  const editions = spreadsheets.data.values.map((row: string[]): Edition => {
+    return {
+      date: row[0],
+      organization: row[1],
+      champion: row[2],
+      runnerUp: row[3],
+      editionNumber: Number(row[4]),
+      title: row[5],
+      mode: row[6],
+      judges: row[7],
+      instagramFlyerPost: row[8],
+    };
+  });
+
+  return Response.json({ editions });
 }
+
+export type Edition = {
+  date: string;
+  organization: string;
+  champion: string;
+  runnerUp: string;
+  editionNumber: number;
+  title: string;
+  mode: string;
+  judges: string;
+  instagramFlyerPost: string;
+};

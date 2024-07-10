@@ -1,26 +1,23 @@
 "use client";
 
+import { Edition } from "@/app/api/fetch-editions/route";
 import { useState } from "react";
 
-type Match = {
-  [key: string]: string;
-};
-
 export const Sheet = () => {
-  const [matches, setMatches] = useState<Match[] | null>(null);
+  const [editions, setEditions] = useState<Edition[] | null>(null);
   const fetchMatchSheet = async () => {
-    const response = await fetch("/api/fetch-sheet");
+    const response = await fetch("/api/fetch-editions");
     const data = await response.json();
     console.log("Matches: ", data);
-    setMatches(data);
+    setEditions(data.editions);
   };
 
   return (
     <>
-      <button onClick={fetchMatchSheet}>Fetch Match Sheet</button>
-      {matches && (
+      <button onClick={fetchMatchSheet}>Mostrar edições</button>
+      {editions && (
         <ul className="space-y-4">
-          {matches.map((match, index) => (
+          {editions.map((match, index) => (
             <li key={index}>{JSON.stringify(match, null, 2)}</li>
           ))}
         </ul>
