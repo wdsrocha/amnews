@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { CreateEdition } from "@/components/create-edition";
 import { Sheet } from "@/components/sheet";
 import { SignIn } from "@/components/sign-in";
 import { SignOut } from "@/components/sign-out";
@@ -21,6 +22,7 @@ export default async function Home() {
             <SignIn />
           )}
         </div>
+        <CreateEdition />
         <Sheet />
       </div>
     </main>
