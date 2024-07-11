@@ -1,30 +1,33 @@
 import { auth } from "@/auth";
-import { CreateEdition } from "@/components/create-edition";
-import { Sheet } from "@/components/sheet";
+import { redirect } from "next/navigation";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { SignIn } from "@/components/sign-in";
-import { SignOut } from "@/components/sign-out";
-import UserAvatar from "@/components/user-avatar";
 
 export default async function Home() {
   const session = await auth();
+  if (session) {
+    redirect("/painel");
+  }
+
   return (
-    <main className="max-w-4xl mx-auto mt-20 p-4 bg-slate-700">
-      <div className="flex flex-col space-y-4">
-        <div className="flex items-center justify-between">
-          <h1>AM News</h1>
-          {session?.user ? (
-            <div className="flex items-center gap-x-2">
-              <UserAvatar />
-              <span>|</span>
-              <SignOut />
-            </div>
-          ) : (
-            <SignIn />
-          )}
-        </div>
-        <CreateEdition />
-        <Sheet />
-      </div>
+    <main className="min-h-screen flex justify-center items-center">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Entrar</CardTitle>
+          <CardDescription>
+            Somente colaboradores do AM News podem acessar o painel.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <SignIn />
+        </CardFooter>
+      </Card>
     </main>
   );
 }
