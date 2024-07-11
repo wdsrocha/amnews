@@ -10,13 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import Image from "next/image";
 import { SignOut } from "./sign-out";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export const Header = async () => {
   const session = await auth();
+  const user = session?.user;
 
-  if (!session?.user) {
+  if (!user) {
     return null;
   }
 
@@ -28,18 +29,21 @@ export const Header = async () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
-              <Image
-                src={session.user.image!}
-                alt={session.user.name!}
-                width={20}
-                height={20}
-                className="w-full h-full rounded-full"
-              />
-              <span className="sr-only">Abrir menu de usuário</span>
+              <Avatar>
+                <AvatarImage src={user.image!} alt={user.name!} />
+                <AvatarFallback>{user.name![0]}</AvatarFallback>
+              </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col gap-y-1">
+                <p className="text-sm font-medium leading-none">{user.name}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <SignOut />

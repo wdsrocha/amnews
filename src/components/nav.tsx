@@ -3,7 +3,13 @@ import { cn } from "@/lib/utils";
 import { BarChart3, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 import { Button } from "./ui/button";
 
 const navItems = [
@@ -16,7 +22,6 @@ const navItems = [
 
 export const Nav = () => {
   const pathname = usePathname();
-  console.log({ pathname });
 
   return (
     <>
@@ -50,6 +55,10 @@ export const Nav = () => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
+          <SheetTitle className="sr-only">Menu</SheetTitle>
+          <SheetDescription className="sr-only">
+            Main navigation
+          </SheetDescription>
           <nav className="grid gap-6 text-lg font-medium">
             <Link
               href="#"
