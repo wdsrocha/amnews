@@ -7,10 +7,12 @@ export function SignIn() {
       className="w-full"
       action={async () => {
         "use server";
-        await signIn("google");
+        await signIn("google", { redirectTo: "/painel" });
       }}
     >
-      <Button className="w-full">Entrar com Google</Button>
+      <Button type="submit" className="w-full">
+        Entrar com Google
+      </Button>
     </form>
   );
 }
