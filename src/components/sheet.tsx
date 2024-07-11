@@ -16,9 +16,11 @@ export const Sheet = () => {
     <>
       <button onClick={fetchMatchSheet}>Mostrar edições</button>
       {editions && (
-        <ul className="space-y-4">
+        <ul>
           {editions.map((match, index) => (
-            <li key={index}>{JSON.stringify(match, null, 2)}</li>
+            <li
+              key={index}
+            >{`${match.organization} no dia ${match.date}. ${match.champion} campeão.`}</li>
           ))}
         </ul>
       )}
