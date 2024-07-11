@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -26,6 +27,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Header } from "@/components/header";
+import { Edition } from "../api/fetch-editions/route";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { formatDate } from "@/lib/utils";
+
+const editions: Partial<Edition>[] = [
+  {
+    date: "2024-01-02",
+    organization: "Batalha da Malta",
+    champion: "Sharp",
+    runnerUp: "Killer",
+    editionNumber: 1,
+    title: "A primeira do ano",
+    instagramFlyerPost: "https://www.instagram.com/p/C1lFUXLOA6S/",
+    judges: "Medusa e Cacique",
+    mode: "45s",
+  },
+  {
+    date: "2024-01-03",
+    organization: "Batalha do Leme",
+    champion: "Sharp",
+    runnerUp: "Killer",
+    editionNumber: 1,
+    title: "A primeira do ano",
+    instagramFlyerPost: "https://www.instagram.com/p/C1lFUXLOA6S/",
+    judges: "Medusa e Cacique",
+    mode: "45s",
+  },
+];
 
 export default function Page() {
   return (
@@ -62,53 +92,60 @@ export default function Page() {
               </DropdownMenu>
             </div>
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Edições</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Organização</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>20/06 (qui.) </TableCell>
-                    <TableCell className="font-medium">
-                      Batalha do Lado Leste
-                    </TableCell>
-                    <TableCell>
+          <div className="flex flex-col gap-y-4">
+            {editions.map((edition, index) => {
+              return (
+                <Card key={index} className="overflow-x-auto">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-y-1">
+                        <CardTitle>{edition.organization}</CardTitle>
+                        <CardDescription>
+                          {formatDate(new Date(edition.date!))}
+                        </CardDescription>
+                      </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            aria-haspopup="true"
-                            size="icon"
                             variant="ghost"
+                            size="sm"
+                            className="h-7 gap-1"
                           >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                              Mais
+                            </span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                        <DropdownMenuContent className="hidden" align="end">
                           <DropdownMenuItem>Editar</DropdownMenuItem>
-                          <DropdownMenuItem>Excluir</DropdownMenuItem>
+                          <DropdownMenuItem>Apagar</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Mostrando <strong>1-10</strong> de <strong>32</strong> edições
-              </div>
-            </CardFooter>
-          </Card>
+                    </div>
+                  </CardHeader>
+                  <CardFooter>
+                    <a
+                      href={edition.instagramFlyerPost}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm text-muted-foreground"
+                    >
+                      Ver postagem no Instagram
+                    </a>
+                  </CardFooter>
+                </Card>
+                // <div key={index} className="overflow-x-auto">
+                //   <p className="text-sm text-muted-foreground">
+                //     {formatDate(new Date(edition.date!))}
+                //   </p>
+                //   <p className="text-normal font-semibold">
+                //     {edition.organization}
+                //   </p>
+                // </div>
+              );
+            })}
+          </div>
         </main>
       </div>
     </div>
