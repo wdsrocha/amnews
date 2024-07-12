@@ -13,9 +13,7 @@ export default async function Page() {
   const editions = await getEditions();
   return (
     <main className="px-4 md:px-6 flex flex-col gap-y-4">
-      <div className="fixed md:hidden flex">
-        <FloatingActionButton />
-      </div>
+      <FloatingActionButton />
       <Card>
         <CardHeader>
           <CardTitle>Edições</CardTitle>
