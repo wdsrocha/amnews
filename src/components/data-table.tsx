@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { DataTablePagination } from "./ui/data-table-pagination";
+import { DataTableColumnVisibility } from "./ui/data-table-column-visibility";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,20 +33,24 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
+      columnVisibility,
     },
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
     <div className="rounded-md border">
+      <DataTableColumnVisibility table={table} />
       <Table className="text-xs text-nowrap">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

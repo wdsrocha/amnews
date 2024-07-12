@@ -1,42 +1,41 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { Match } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+
+export const toLabel = (key: string) => {
+  const labelByKey: { [key: string]: string } = {
+    date: "Data",
+    organization: "Organização",
+    stage: "Fase",
+    raw: "Confronto",
+  };
+
+  return labelByKey[key] || key;
+};
 
 export const columns: ColumnDef<Match>[] = [
   {
     accessorKey: "date",
-    header: ({ column }) => {
-      return (
-        <>
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="flex items-center gap-1 text-xs"
-          >
-            <span>Data</span>
-            <ArrowUpDown className="h-3 w-3" />
-          </Button>
-        </>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title={toLabel("date")} />
+    ),
     cell: ({ row }) => {
       return formatDate(new Date(row.getValue("date")));
     },
   },
   {
     accessorKey: "organization",
-    header: "Organização",
+    header: toLabel("organization"),
   },
   {
     accessorKey: "stage",
-    header: "Fase",
+    header: toLabel("stage"),
   },
   {
     accessorKey: "raw",
-    header: "Confronto",
+    header: toLabel("raw"),
   },
 ];
