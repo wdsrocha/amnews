@@ -35,6 +35,9 @@ export async function getSheets(): Promise<sheets_v4.Sheets | undefined> {
 
 function toStage(rawStage: string): Stage {
   rawStage = rawStage.toLocaleLowerCase();
+  if (rawStage === "pré-fase" || rawStage === "pré fase") {
+    return Stage.PrePhase;
+  }
   if (rawStage === "primeira fase" || rawStage === "oitavas de final") {
     return Stage.EightFinals;
   } else if (rawStage === "segunda fase" || rawStage === "quartas de final") {
@@ -54,6 +57,7 @@ function toStage(rawStage: string): Stage {
 
 export enum Stage {
   Unknown = "Desconhecido",
+  PrePhase = "Pré-Fase",
   EightFinals = "Oitavas de Final",
   QuarterFinals = "Quartas de Final",
   SemiFinals = "Semifinal",
