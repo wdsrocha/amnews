@@ -52,7 +52,7 @@ export default async function Page({
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="text-sm">
+        <CardContent className="text-sm p-6">
           <div className="grid gap-3">
             <div className="font-semibold">Dados da Edição</div>
             <ul className="grid gap-3">

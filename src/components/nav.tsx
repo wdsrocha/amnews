@@ -17,8 +17,8 @@ const navItems = [
   { href: "/painel", label: "Painel" },
   { href: "/confrontos", label: "Confrontos" },
   { href: "/edicoes", label: "Edições" },
-  { href: "/organizacoes", label: "Organizações" },
-  { href: "/mcs", label: "MCs" },
+  // { href: "/organizacoes", label: "Organizações" },
+  // { href: "/mcs", label: "MCs" },
 ];
 
 export const Nav = () => {
