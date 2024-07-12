@@ -22,7 +22,7 @@ export const Header = async () => {
   }
 
   return (
-    <header className="sticky top-0 flex h-16 justify-between items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky z-10 top-0 flex h-16 justify-between items-center gap-4 border-b bg-background px-4 md:px-6 mb-4">
       <Nav />
       <div className="flex items-center gap-4 md:gap-2 lg:gap-4">
         <ModeToggle />
