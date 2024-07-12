@@ -40,7 +40,7 @@ function toStage(rawStage: string): Stage {
   }
 }
 
-enum Stage {
+export enum Stage {
   Unknown = "Desconhecido",
   EightFinals = "Oitavas de Final",
   QuarterFinals = "Quartas de Final",
@@ -49,7 +49,7 @@ enum Stage {
 }
 
 export type Match = {
-  date: Date;
+  date: string; // yyyy-mm-dd
   organization: string;
   stage: Stage;
   raw: string;
@@ -60,7 +60,8 @@ export async function getMatches(): Promise<Match[]> {
 
   const spreadsheets = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SHEET_ID,
-    range: "Batalhas!A2:D100",
+    // Let's see how it performs without pagination
+    range: "Batalhas!A2:D9999",
   });
 
   if (!spreadsheets.data.values) {
@@ -69,7 +70,7 @@ export async function getMatches(): Promise<Match[]> {
 
   const matches = spreadsheets.data.values.map((row: string[]): Match => {
     return {
-      date: new Date(row[0]),
+      date: row[0],
       organization: row[1],
       stage: toStage(row[2]),
       raw: row[3],

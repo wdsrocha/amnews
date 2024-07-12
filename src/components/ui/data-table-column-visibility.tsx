@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { headers } from "@/app/confrontos/columns";
+import { matchesTableHeaders as headers } from "@/lib/utils";
 
 interface DataTableColumnVisibility<TData> {
   table: Table<TData>;
