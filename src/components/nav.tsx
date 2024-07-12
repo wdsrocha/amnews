@@ -39,7 +39,7 @@ export const Nav = () => {
             href={item.href}
             className={cn(
               "transition-colors hover:text-foreground",
-              pathname === item.href
+              pathname.startsWith(item.href)
                 ? "text-foreground"
                 : "text-muted-foreground"
             )}
@@ -77,7 +77,7 @@ export const Nav = () => {
                   href={item.href}
                   className={cn(
                     "hover:text-foreground",
-                    pathname === item.href
+                    pathname.startsWith(item.href)
                       ? "text-foreground"
                       : "text-muted-foreground"
                   )}
