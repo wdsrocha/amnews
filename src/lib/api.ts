@@ -1,7 +1,7 @@
 import { auth, EnrichedSession } from "@/auth";
-import { google } from "googleapis";
+import { google, sheets_v4 } from "googleapis";
 
-async function getSheets() {
+async function getSheets(): Promise<sheets_v4.Sheets | undefined> {
   const session = (await auth()) as EnrichedSession;
 
   if (!session) {
@@ -18,7 +18,18 @@ async function getSheets() {
     refresh_token: session.refreshToken,
   });
 
-  return google.sheets({ version: "v4", auth: oauth2Client });
+  const sheets = google.sheets({ version: "v4", auth: oauth2Client });
+
+  try {
+    await sheets.spreadsheets.get({
+      spreadsheetId: process.env.SHEET_ID,
+    });
+  } catch (error) {
+    console.error("Error fetching spreadsheet", error);
+    return undefined;
+  }
+
+  return sheets;
 }
 
 function toStage(rawStage: string): Stage {
@@ -58,6 +69,10 @@ export type Match = {
 export async function getMatches(): Promise<Match[]> {
   const sheets = await getSheets();
 
+  if (!sheets) {
+    return [];
+  }
+
   const spreadsheets = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SHEET_ID,
     // Let's see how it performs without pagination
@@ -94,6 +109,10 @@ export type Edition = {
 
 export async function getEditions(): Promise<Edition[]> {
   const sheets = await getSheets();
+
+  if (!sheets) {
+    return [];
+  }
 
   const spreadsheets = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.SHEET_ID,
