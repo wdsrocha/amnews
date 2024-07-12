@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -18,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { DataTablePagination } from "./ui/data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,6 +40,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
     },
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -84,6 +87,7 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      <DataTablePagination table={table} />
     </div>
   );
 }
