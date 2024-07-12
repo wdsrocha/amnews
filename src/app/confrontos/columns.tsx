@@ -5,37 +5,45 @@ import { Match } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const toLabel = (key: string) => {
-  const labelByKey: { [key: string]: string } = {
-    date: "Data",
-    organization: "Organização",
-    stage: "Fase",
-    raw: "Confronto",
-  };
-
-  return labelByKey[key] || key;
+export const headers = {
+  date: {
+    id: "date",
+    label: "Data",
+  },
+  organization: {
+    id: "organization",
+    label: "Organização",
+  },
+  stage: {
+    id: "stage",
+    label: "Fase",
+  },
+  raw: {
+    id: "raw",
+    label: "Confronto",
+  },
 };
 
 export const columns: ColumnDef<Match>[] = [
   {
-    accessorKey: "date",
+    accessorKey: headers.date.id,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={toLabel("date")} />
+      <DataTableColumnHeader column={column} title={headers.date.label} />
     ),
     cell: ({ row }) => {
-      return formatDate(new Date(row.getValue("date")));
+      return formatDate(new Date(row.getValue(headers.date.id)));
     },
   },
   {
-    accessorKey: "organization",
-    header: toLabel("organization"),
+    accessorKey: headers.organization.id,
+    header: headers.organization.label,
   },
   {
-    accessorKey: "stage",
-    header: toLabel("stage"),
+    accessorKey: headers.stage.id,
+    header: headers.stage.label,
   },
   {
-    accessorKey: "raw",
-    header: toLabel("raw"),
+    accessorKey: headers.raw.id,
+    header: headers.raw.label,
   },
 ];
