@@ -7,40 +7,50 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+import { cn } from "@/lib/utils";
+import { TablePropertiesIcon } from "lucide-react";
 
 interface DataTableColumnVisibility<TData> {
   table: Table<TData>;
+  className?: string;
 }
 
 export function DataTableColumnVisibility<TData>({
   table,
+  className,
 }: DataTableColumnVisibility<TData>) {
   return (
-    <div className="flex items-center justify-between px-2 py-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="ml-auto text-xs">
-            Colunas
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter((column) => column.getCanHide())
-            .map((column) => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              );
-            })}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          size="sm"
+          variant="outline"
+          className={cn(className, "flex items-center gap-x-1")}
+        >
+          <TablePropertiesIcon className="w-3 h-3" />
+          <span className="hidden sm:inline">Colunas</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {table
+          .getAllColumns()
+          .filter((column) => column.getCanHide())
+          .map((column) => {
+            return (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                className="capitalize"
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                onSelect={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                {column.id}
+              </DropdownMenuCheckboxItem>
+            );
+          })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
