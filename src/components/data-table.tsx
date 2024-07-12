@@ -25,9 +25,11 @@ import {
 import { useState } from "react";
 import { DataTablePagination } from "./ui/data-table-pagination";
 import { DataTableColumnVisibility } from "./ui/data-table-column-visibility";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import { FloatingActionButton } from "./floating-action-button";
 import { CirclePlusIcon } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   title?: string;
@@ -75,10 +77,16 @@ export function DataTable<TData, TValue>({
           </div>
           <div className="flex items-center gap-x-2">
             <DataTableColumnVisibility table={table} />
-            <Button size="sm" className="hidden md:flex items-center gap-x-1">
+            <Link
+              href="/edicoes/novo"
+              className={cn(
+                buttonVariants({ variant: "default", size: "sm" }),
+                "hidden md:flex items-center gap-x-1"
+              )}
+            >
               <CirclePlusIcon className="h-3 w-3" />
               <span>Adicionar edição</span>
-            </Button>
+            </Link>
             <div className="md:hidden flex fixed">
               <FloatingActionButton />
             </div>
