@@ -4,6 +4,7 @@ import { columns } from "./columns";
 
 export default async function Page() {
   const editions = await getEditions();
+
   return (
     <main className="px-4 md:px-6 flex flex-col gap-y-4">
       <DataTable

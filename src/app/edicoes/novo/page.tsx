@@ -27,22 +27,24 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { createEdition } from "./action";
 import { toast } from "sonner";
-import { redirect, useRouter } from "next/navigation";
+import { ptBR } from "date-fns/locale";
+import { useRouter } from "next/navigation";
+import { Edition } from "@/lib/api";
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   organization: z.string({
     required_error: "Escolha a organização",
   }),
@@ -58,15 +60,23 @@ export default function Page() {
   });
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    const edition: Partial<Edition> = {
+      date: format(data.date, "yyyy-MM-dd"),
+      organization: data.organization,
+    };
+
+    createEdition(edition);
+
+    const organizationSlug = slugify(edition.organization!);
+
     toast.success("Edição cadastrada", {
       action: {
         label: "Ver edição",
         onClick: () => {
-          console.log("Ver edição");
+          router.push(`/edicoes/${organizationSlug}/${edition.date}`);
         },
       },
     });
-    router.push("/edicoes");
   };
 
   return (
@@ -174,7 +184,7 @@ export default function Page() {
                       >
                         <span>
                           {field.value
-                            ? format(field.value, "PPP")
+                            ? format(field.value, "PPP", { locale: ptBR })
                             : "Escolha uma data"}
                         </span>
                         <CalendarIcon className="h-4 w-4 opacity-50" />
@@ -183,12 +193,11 @@ export default function Page() {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
+                      locale={ptBR}
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("2024-01-01")
-                      }
+                      disabled={(date) => date < new Date("2024-01-01")}
                       initialFocus
                     />
                   </PopoverContent>

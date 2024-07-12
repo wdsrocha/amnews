@@ -1,7 +1,8 @@
 import { auth, EnrichedSession } from "@/auth";
 import { google, sheets_v4 } from "googleapis";
+import { slugify } from "./utils";
 
-async function getSheets(): Promise<sheets_v4.Sheets | undefined> {
+export async function getSheets(): Promise<sheets_v4.Sheets | undefined> {
   const session = (await auth()) as EnrichedSession;
 
   if (!session) {
@@ -138,4 +139,14 @@ export async function getEditions(): Promise<Edition[]> {
   });
 
   return editions;
+}
+
+export async function getEdition(organizationSlug: string, date: string) {
+  const editions = await getEditions();
+
+  return editions.find(
+    (edition) =>
+      slugify(edition.organization) === organizationSlug &&
+      edition.date === date
+  );
 }

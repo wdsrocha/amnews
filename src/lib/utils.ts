@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
+import baseSlugify from "slugify";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -24,4 +25,8 @@ export function formatDate(date: Date) {
   const day = format(dt, "d");
 
   return `${capitalizedWeekDay}, ${day} de ${capitalizedMonth}`;
+}
+
+export function slugify(text: string) {
+  return baseSlugify(text, { lower: true });
 }
