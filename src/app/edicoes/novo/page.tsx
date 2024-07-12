@@ -44,7 +44,7 @@ import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { Edition } from "@/lib/api";
 
-export const FormSchema = z.object({
+const FormSchema = z.object({
   organization: z.string({
     required_error: "Escolha a organização",
   }),
