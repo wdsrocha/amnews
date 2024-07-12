@@ -206,7 +206,7 @@ export default function Page() {
   );
 }
 
-export const ORGANIZATIONS = [
+const ORGANIZATIONS = [
   "Batalha da Casa Coletiva",
   "Batalha da DC (Tefé)",
   "Batalha da Diversidade",
