@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetTitle,
@@ -27,7 +28,7 @@ export const Nav = () => {
     <>
       <nav className="hidden text-nowrap flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
-          href="#"
+          href="/"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
         >
           <BarChart3 size={24} className="text-foreground" />
@@ -60,26 +61,30 @@ export const Nav = () => {
             Main navigation
           </SheetDescription>
           <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href="#"
-              className="flex items-center gap-2 text-lg font-semibold"
-            >
-              <BarChart3 className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
-            </Link>
-            {navItems.map((item, index) => (
+            <SheetClose asChild>
               <Link
-                key={index}
-                href={item.href}
-                className={cn(
-                  "hover:text-foreground",
-                  pathname === item.href
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-                )}
+                href="/"
+                className="flex items-center gap-2 text-lg font-semibold"
               >
-                {item.label}
+                <BarChart3 className="h-6 w-6" />
               </Link>
+            </SheetClose>
+
+            {navItems.map((item, index) => (
+              <SheetClose asChild key={index}>
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={cn(
+                    "hover:text-foreground",
+                    pathname === item.href
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              </SheetClose>
             ))}
           </nav>
         </SheetContent>
