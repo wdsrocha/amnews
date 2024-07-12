@@ -7,9 +7,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function toTimezonelessDate(date: Date) {
+  return new Date(date.valueOf() + date.getTimezoneOffset() * 60 * 1000);
+}
+
 export function formatDate(date: Date) {
   // Remove timezone offset
-  const dt = new Date(date.valueOf() + date.getTimezoneOffset() * 60 * 1000);
+  const dt = toTimezonelessDate(date);
 
   const weekDay = format(dt, "EEEE", { locale: ptBR }).split("-")[0];
   const capitalizedWeekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
