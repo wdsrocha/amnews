@@ -29,7 +29,8 @@ import { buttonVariants } from "./ui/button";
 import { FloatingActionButton } from "./floating-action-button";
 import { CirclePlusIcon } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   title?: string;
@@ -46,6 +47,7 @@ export function DataTable<TData, TValue>({
   data,
   initialState,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -113,21 +115,28 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const organizationId = slugify(row.getValue("organization"));
+                const date = row.getValue("date");
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() =>
+                      router.push(`/edicoes/${organizationId}/${date}`)
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24">

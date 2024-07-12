@@ -106,6 +106,7 @@ export type Edition = {
   mode: string;
   judges: string;
   instagramPost: string;
+  matches?: Match[];
 };
 
 export async function getEditions(): Promise<Edition[]> {
@@ -141,12 +142,30 @@ export async function getEditions(): Promise<Edition[]> {
   return editions;
 }
 
-export async function getEdition(organizationSlug: string, date: string) {
+export async function getEdition(
+  organizationSlug: string,
+  date: string
+): Promise<Edition | undefined> {
   const editions = await getEditions();
 
-  return editions.find(
+  const edition = editions.find(
     (edition) =>
       slugify(edition.organization) === organizationSlug &&
       edition.date === date
   );
+
+  if (!edition) {
+    return undefined;
+  }
+
+  const matches = (await getMatches()).filter((match) => {
+    return (
+      slugify(match.organization) === organizationSlug && match.date === date
+    );
+  });
+
+  return {
+    ...edition,
+    matches,
+  };
 }
