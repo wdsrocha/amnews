@@ -79,3 +79,44 @@ export async function getMatches(): Promise<Match[]> {
 
   return matches;
 }
+
+export type Edition = {
+  date: string; // yyyy-mm-dd
+  organization: string;
+  champion: string;
+  runnerUp: string;
+  editionNumber: string;
+  title: string;
+  mode: string;
+  judges: string;
+  instagramPost: string;
+};
+
+export async function getEditions(): Promise<Edition[]> {
+  const sheets = await getSheets();
+
+  const spreadsheets = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SHEET_ID,
+    range: "Edições!A2:Z9999",
+  });
+
+  if (!spreadsheets.data.values) {
+    return [];
+  }
+
+  const editions = spreadsheets.data.values.map((row: string[]): Edition => {
+    return {
+      date: row[0],
+      organization: row[1],
+      champion: row[2],
+      runnerUp: row[3],
+      editionNumber: row[4],
+      title: row[5],
+      mode: row[6],
+      judges: row[7],
+      instagramPost: row[8],
+    };
+  });
+
+  return editions;
+}

@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { matchesTableHeaders as headers } from "@/lib/utils";
 
 interface DataTableColumnVisibility<TData> {
   table: Table<TData>;
@@ -36,7 +35,7 @@ export function DataTableColumnVisibility<TData>({
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {headers[column.id as keyof typeof headers].label}
+                  {column.id}
                 </DropdownMenuCheckboxItem>
               );
             })}

@@ -25,22 +25,3 @@ export function formatDate(date: Date) {
 
   return `${capitalizedWeekDay}, ${day} de ${capitalizedMonth}`;
 }
-
-export const matchesTableHeaders = {
-  date: {
-    id: "date",
-    label: "Data",
-  },
-  organization: {
-    id: "organization",
-    label: "Organização",
-  },
-  stage: {
-    id: "stage",
-    label: "Fase",
-  },
-  raw: {
-    id: "raw",
-    label: "Confronto",
-  },
-};
