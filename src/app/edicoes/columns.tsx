@@ -1,12 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { Edition, Match } from "@/lib/api";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate, slugify } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { EyeIcon } from "lucide-react";
+import Link from "next/link";
 
 const headers = {
+  navigationAux: {
+    id: "navigationAux",
+    label: "",
+  },
   date: {
     id: "date",
     label: "Data",
@@ -46,6 +52,25 @@ const headers = {
 };
 
 export const columns: ColumnDef<Edition>[] = [
+  {
+    accessorKey: headers.navigationAux.id,
+    header: "",
+    cell: ({ row }) => {
+      return (
+        <Link
+          href={`/edicoes/${slugify(row.original.organization)}/${
+            row.original.date
+          }`}
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "sm" }),
+            "flex gap-x-1"
+          )}
+        >
+          <EyeIcon className="w-4 h-4 -mx-2 opacity-50" />
+        </Link>
+      );
+    },
+  },
   {
     accessorKey: headers.date.id,
     header: ({ column }) => (

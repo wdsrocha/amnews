@@ -1,36 +1,6 @@
 "use client";
 
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { CalendarIcon, CheckIcon } from "lucide-react";
-import { CaretSortIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { cn, slugify } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -38,12 +8,42 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { createEdition } from "./action";
-import { toast } from "sonner";
-import { ptBR } from "date-fns/locale";
-import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Edition } from "@/lib/api";
+import { cn, stringToDate } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CheckIcon, CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
+import { updateEdition } from "./action";
 
 const FormSchema = z.object({
   organization: z.string({
@@ -52,51 +52,36 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "Escolha uma data",
   }),
+  title: z.string().optional(),
+  mode: z.string().optional(),
+  editionNumber: z.string().optional(),
+  judges: z.string().optional(),
+  instagramPost: z.string().optional(),
 });
 
-export default function Page() {
-  const router = useRouter();
+export function EditEditionForm({ edition }: { edition: Edition }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      ...edition,
+      date: stringToDate(edition.date),
+    },
   });
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    console.log({ data });
+
     const edition: Partial<Edition> = {
+      ...data,
       date: format(data.date, "yyyy-MM-dd"),
       organization: data.organization,
     };
 
-    createEdition(edition);
-
-    const organizationSlug = slugify(edition.organization!);
-
-    toast.success("Edição cadastrada", {
-      action: {
-        label: "Ver edição",
-        onClick: () => {
-          router.push(`/edicoes/${organizationSlug}/${edition.date}`);
-        },
-      },
-    });
+    updateEdition(edition as Edition);
   };
 
   return (
-    <main className="px-4 md:px-6 flex flex-col gap-y-8">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/edicoes">Edições</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Cadastrar</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className="flex flex-col gap-y-2">
-        <h1 className="font-semibold">Nova Edição</h1>
-        <Separator />
-      </div>
+    <div className="flex flex-col md:grid md:grid-flow-row md:grid-cols-2 gap-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -106,7 +91,7 @@ export default function Page() {
             control={form.control}
             name="organization"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-min">
                 <FormLabel>Organização</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -115,7 +100,7 @@ export default function Page() {
                         variant="outline"
                         role="combobox"
                         className={cn(
-                          "w-min justify-between flex items-center gap-x-2 font-normal",
+                          "justify-between flex items-center gap-x-2 font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -174,7 +159,7 @@ export default function Page() {
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-min">
                 <FormLabel>Data</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -182,7 +167,7 @@ export default function Page() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-min flex justify-between items-center gap-x-2 font-normal",
+                          "flex justify-between items-center gap-x-2 font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -210,12 +195,104 @@ export default function Page() {
               </FormItem>
             )}
           />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Título</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Edição Clandestina Especial 2 Anos"
+                  />
+                </FormControl>
+                <FormDescription>
+                  Título opicional que ajude a identificar a edição.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="mode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Modo</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Bate e Volta, Desafio" />
+                </FormControl>
+                <FormDescription>
+                  Lista de modalidades presentes na edição.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="editionNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Número da edição</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="10"
+                    className="w-14"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="judges"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Jurados</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Medusa e Baueb" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="instagramPost"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Post do campeão</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="url"
+                    placeholder="https://www.instagram.com/p/..."
+                  />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="w-full md:w-min">
-            Cadastrar
+            Salvar
           </Button>
         </form>
       </Form>
-    </main>
+    </div>
   );
 }
 

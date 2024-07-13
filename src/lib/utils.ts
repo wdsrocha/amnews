@@ -8,6 +8,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function stringToDate(date: string) {
+  return toTimezonelessDate(new Date(date));
+}
+
+export function dateToString(date: Date) {
+  return date.toISOString().split("T")[0];
+}
+
 export function toTimezonelessDate(date: Date) {
   return new Date(date.valueOf() + date.getTimezoneOffset() * 60 * 1000);
 }

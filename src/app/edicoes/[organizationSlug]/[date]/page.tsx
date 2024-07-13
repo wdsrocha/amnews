@@ -1,4 +1,4 @@
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { EditIcon, ExternalLinkIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function Page({
   params,
@@ -54,10 +55,16 @@ export default async function Page({
                   {formatDate(new Date(edition.date))}
                 </CardDescription>
               </div>
-              <Button size="sm" variant="ghost" className="flex gap-x-1">
+              <Link
+                href={`/edicoes/${params.organizationSlug}/${params.date}/editar`}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "flex gap-x-1"
+                )}
+              >
                 <span className="hidden md:flex">Editar</span>
                 <EditIcon className="w-4 h-4" />
-              </Button>
+              </Link>
             </div>
           </CardHeader>
           <CardContent className="text-sm p-6">
@@ -93,17 +100,19 @@ export default async function Page({
                   <span className="text-muted-foreground">Jurados</span>
                   <span>{edition.judges}</span>
                 </li>
-                <li className="flex items-center justify-between">
-                  <a
-                    href={edition.instagramPost}
-                    className="text-blue-600 flex items-center gap-x-1 ml-auto"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span>Post do Campeão</span>
-                    <ExternalLinkIcon className="w-4 h-4" />
-                  </a>
-                </li>
+                {edition.instagramPost && (
+                  <li className="flex items-center justify-between">
+                    <a
+                      href={edition.instagramPost}
+                      className="text-blue-600 flex items-center gap-x-1 ml-auto"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span>Post do Campeão</span>
+                      <ExternalLinkIcon className="w-4 h-4" />
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
           </CardContent>
