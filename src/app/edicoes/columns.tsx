@@ -112,9 +112,11 @@ export const columns: ColumnDef<Edition>[] = [
     accessorKey: headers.instagramPost.id,
     header: headers.instagramPost.label,
     cell: ({ row }) => {
+      const post = row.getValue<string>(headers.instagramPost.id);
+      if (!post) return null;
       return (
         <a
-          href={row.getValue(headers.instagramPost.id)}
+          href={post}
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-500 underline"
