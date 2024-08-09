@@ -6,7 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { getEdition } from "@/lib/api";
+import { getEdition, getOrganizations } from "@/lib/api";
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
 import { EditEditionForm } from "./form";
@@ -19,9 +19,16 @@ export default async function Page({
   params: { organizationSlug: string; date: string };
 }) {
   const edition = await getEdition(params.organizationSlug, params.date);
+  const organizations = await getOrganizations();
 
   if (!edition) {
-    return redirect("/404");
+    return (
+      <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
+        <div className="flex flex-col gap-y-2">
+          <h1 className="font-semibold">Edição não encontrada</h1>
+        </div>
+      </main>
+    );
   }
 
   return (

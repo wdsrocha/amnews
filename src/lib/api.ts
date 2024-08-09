@@ -173,3 +173,9 @@ export async function getEdition(
     matches,
   };
 }
+
+export async function getOrganizations(): Promise<string[]> {
+  const editions = await getEditions();
+
+  return editions.map((edition) => edition.organization);
+}

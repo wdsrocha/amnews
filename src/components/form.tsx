@@ -1,49 +1,43 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Edition } from "@/lib/api";
+import { cn, slugify, stringToDate } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { CalendarIcon, CheckIcon } from "lucide-react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { cn, slugify } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { createEdition } from "./action";
-import { toast } from "sonner";
 import { ptBR } from "date-fns/locale";
-import { useRouter } from "next/navigation";
-import { Edition } from "@/lib/api";
+import { CheckIcon, CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
+import { createEdition } from "../app/edicoes/adicionar/action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   organization: z.string({
@@ -52,51 +46,62 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "Escolha uma data",
   }),
+  title: z.string().optional(),
+  mode: z.string().optional(),
+  editionNumber: z.string().optional(),
+  judges: z.string().optional(),
+  instagramPost: z.string().optional(),
 });
 
-export default function Page() {
+export function EditEditionForm({
+  edition,
+  organizations,
+}: {
+  edition: Edition;
+  organizations: string[];
+}) {
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      ...edition,
+      date: edition.date ? stringToDate(edition.date) : undefined,
+    },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    console.log({ data });
+
+    const organizationSlug = slugify(data.organization);
+    const yyyyMMdd = format(data.date, "yyyy-MM-dd");
+    const readableDate = format(data.date, "PPP", { locale: ptBR });
+
     const edition: Partial<Edition> = {
-      date: format(data.date, "yyyy-MM-dd"),
+      ...data,
+      date: yyyyMMdd,
       organization: data.organization,
     };
 
-    createEdition(edition);
+    const editionCreated = await createEdition(edition as Edition);
 
-    const organizationSlug = slugify(edition.organization!);
-
-    toast.success("Edição cadastrada", {
-      action: {
-        label: "Ver edição",
-        onClick: () => {
-          router.push(`/edicoes/${organizationSlug}/${edition.date}`);
+    if (editionCreated) {
+      toast.success("Edição cadastrada", {
+        description: `${readableDate}\n${data.organization}`,
+        closeButton: true,
+        duration: 10_000,
+        action: {
+          label: "Cadastrar outra",
+          onClick: () => {
+            router.push(`/edicoes/adicionar`);
+          },
         },
-      },
-    });
+      });
+      router.push(`/edicoes/${organizationSlug}/${yyyyMMdd}`);
+    }
   };
 
   return (
-    <main className="px-4 md:px-6 flex flex-col gap-y-8">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/edicoes">Edições</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Cadastrar</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className="flex flex-col gap-y-2">
-        <h1 className="font-semibold">Nova Edição</h1>
-        <Separator />
-      </div>
+    <div className="flex flex-col md:grid md:grid-flow-row md:grid-cols-2 gap-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -106,7 +111,7 @@ export default function Page() {
             control={form.control}
             name="organization"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-min">
                 <FormLabel>Organização</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -115,13 +120,13 @@ export default function Page() {
                         variant="outline"
                         role="combobox"
                         className={cn(
-                          "w-min justify-between flex items-center gap-x-2 font-normal",
+                          "justify-between flex items-center gap-x-2 font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
                         <span>
                           {field.value
-                            ? ORGANIZATIONS.find(
+                            ? organizations.find(
                                 (organization) => organization === field.value
                               )
                             : "Escolha a organização"}
@@ -142,7 +147,7 @@ export default function Page() {
                       <CommandList>
                         <CommandEmpty>Organização não encontrada.</CommandEmpty>
                         <CommandGroup>
-                          {ORGANIZATIONS.map((organization) => (
+                          {organizations.map((organization) => (
                             <CommandItem
                               value={organization}
                               key={organization}
@@ -174,7 +179,7 @@ export default function Page() {
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-min">
                 <FormLabel>Data</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -182,7 +187,7 @@ export default function Page() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-min flex justify-between items-center gap-x-2 font-normal",
+                          "flex justify-between items-center gap-x-2 font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -210,50 +215,103 @@ export default function Page() {
               </FormItem>
             )}
           />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Título</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Edição Clandestina Especial 2 Anos"
+                  />
+                </FormControl>
+                <FormDescription>
+                  Título opicional que ajude a identificar a edição.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="mode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Modo</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Bate e Volta, Desafio" />
+                </FormControl>
+                <FormDescription>
+                  Lista de modalidades presentes na edição.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="editionNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Número da edição</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="10"
+                    className="w-14"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="judges"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Jurados</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Medusa e Baueb" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="instagramPost"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Post do campeão</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="url"
+                    placeholder="https://www.instagram.com/p/..."
+                  />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="w-full md:w-min">
-            Cadastrar
+            Salvar
           </Button>
         </form>
       </Form>
-    </main>
+    </div>
   );
 }
-
-const ORGANIZATIONS = [
-  "Batalha da Casa Coletiva",
-  "Batalha da DC (Tefé)",
-  "Batalha da Diversidade",
-  "Batalha da God",
-  "Batalha da Malta",
-  "Batalha da Maltinha",
-  "Batalha da Matinha",
-  "Batalha da New City",
-  "Batalha da Norte",
-  "Batalha da Onça",
-  "Batalha da Praia",
-  "Batalha da UDV",
-  "Batalha da União",
-  "Batalha da Zaik (Tefé)",
-  "Batalha do BK",
-  "Batalha do Brooklyn",
-  "Batalha do Conekta",
-  "Batalha do Esquenta",
-  "Batalha do Lado Leste",
-  "Batalha do Leme",
-  "Batalha do Mirante (Ita)",
-  "Batalha do Mundo Novo",
-  "Batalha do Passarinho",
-  "Batalha do Santa (Tefé)",
-  "Batalha do Vale",
-  "Batalha do Vila",
-  "Batalha do VM2",
-  "Batalha dos Barés",
-  "Batalha dos Caixa Baixa",
-  "Flow de Favela",
-  "Hip Hop Delas",
-  "La Prata Prod",
-  "Movimento BDM (Tefé)",
-  "Raízes Espaço Cultural",
-  "Ringue Clandestino",
-  "Trap na Veia",
-];
