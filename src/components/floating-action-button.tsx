@@ -10,7 +10,7 @@ export const FloatingActionButton = () => {
       asChild
       className="fixed z-10 bottom-3 md:bottom-5 md:right-8 right-3 h-14 w-14 rounded-full shadow-2xl"
     >
-      <Link href="/edicoes/novo">
+      <Link href="/edicoes/adicionar">
         <PlusIcon className="h-5 w-5" />
       </Link>
     </Button>

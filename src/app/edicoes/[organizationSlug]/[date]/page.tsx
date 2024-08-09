@@ -29,7 +29,26 @@ export default async function Page({
   const edition = await getEdition(params.organizationSlug, params.date);
 
   if (!edition) {
-    return redirect("/404");
+    return (
+      <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/edicoes">Edições</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Detalhes</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex flex-col gap-y-2">
+          <h1 className="font-semibold">Edição não encontrada</h1>
+          <Separator />
+        </div>
+        <div className="text-sm">Edição não encontrada</div>
+      </main>
+    );
   }
 
   return (

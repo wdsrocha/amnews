@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Edition } from "@/lib/api";
-import { cn, stringToDate } from "@/lib/utils";
+import { cn, slugify, stringToDate } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import {
@@ -35,7 +35,9 @@ import { CheckIcon, CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Separator } from "@/components/ui/separator";
-import { updateEdition } from "./action";
+import { createEdition } from "./action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   organization: z.string({
@@ -52,24 +54,44 @@ const FormSchema = z.object({
 });
 
 export function EditEditionForm({ edition }: { edition: Edition }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       ...edition,
-      date: stringToDate(edition.date),
+      date: edition.date ? stringToDate(edition.date) : undefined,
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log({ data });
+
+    const organizationSlug = slugify(data.organization);
+    const yyyyMMdd = format(data.date, "yyyy-MM-dd");
+    const readableDate = format(data.date, "PPP", { locale: ptBR });
 
     const edition: Partial<Edition> = {
       ...data,
-      date: format(data.date, "yyyy-MM-dd"),
+      date: yyyyMMdd,
       organization: data.organization,
     };
 
-    updateEdition(edition as Edition);
+    const editionCreated = await createEdition(edition as Edition);
+
+    if (editionCreated) {
+      toast.success("Edição cadastrada", {
+        description: `${readableDate}\n${data.organization}`,
+        closeButton: true,
+        duration: 10_000,
+        action: {
+          label: "Cadastrar outra",
+          onClick: () => {
+            router.push(`/edicoes/adicionar`);
+          },
+        },
+      });
+      router.push(`/edicoes/${organizationSlug}/${yyyyMMdd}`);
+    }
   };
 
   return (
