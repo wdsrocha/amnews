@@ -17,9 +17,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { EditIcon, ExternalLinkIcon } from "lucide-react";
+import { DeleteIcon, EditIcon, ExternalLinkIcon } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default async function Page({
   params,
@@ -176,6 +187,42 @@ export default async function Page({
             </ul>
           </CardContent>
         </Card>
+        {/* <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Excluir</CardTitle>
+              <div className="px-3">
+                <span className="hidden md:flex">Excluir</span>
+                <DeleteIcon className="w-4 h-4" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="text-sm">
+            <p>Essa ação é irreversível.</p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="sm" variant="destructive" className="mt-4">
+                  Apagar Edição
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Você tem certeza absoluta?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Essa ação vai apagar a edição da planilha. É possível
+                    recuperar depois, mas vai dar trabalho para o Sharp.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction>Apagar</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card> */}
       </div>
     </main>
   );

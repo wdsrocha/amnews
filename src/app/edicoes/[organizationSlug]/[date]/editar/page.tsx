@@ -11,7 +11,7 @@ import { format } from "date-fns";
 import { redirect } from "next/navigation";
 import { EditEditionForm } from "./form";
 import { Separator } from "@/components/ui/separator";
-import { stringToDate } from "@/lib/utils";
+import { slugify, stringToDate } from "@/lib/utils";
 
 export default async function Page({
   params,
@@ -33,14 +33,16 @@ export default async function Page({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/edicoes/${edition.organization}/`}>
+            <BreadcrumbLink href={`/edicoes/${slugify(edition.organization)}/`}>
               {edition.organization}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/edicoes/${edition.organization}/${edition.date}/`}
+              href={`/edicoes/${slugify(edition.organization)}/${
+                edition.date
+              }/`}
             >
               {format(stringToDate(edition.date), "dd/MM/yyyy")}
             </BreadcrumbLink>
