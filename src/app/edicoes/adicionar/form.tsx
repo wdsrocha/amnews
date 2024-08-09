@@ -46,6 +46,8 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "Escolha uma data",
   }),
+  champion: z.string().optional(),
+  runnerUp: z.string().optional(),
   title: z.string().optional(),
   mode: z.string().optional(),
   editionNumber: z.string().optional(),
@@ -53,7 +55,13 @@ const FormSchema = z.object({
   instagramPost: z.string().optional(),
 });
 
-export function EditEditionForm({ edition }: { edition: Edition }) {
+export function EditEditionForm({
+  edition,
+  organizations,
+}: {
+  edition: Edition;
+  organizations: string[];
+}) {
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -120,7 +128,7 @@ export function EditEditionForm({ edition }: { edition: Edition }) {
                       >
                         <span>
                           {field.value
-                            ? ORGANIZATIONS.find(
+                            ? organizations.find(
                                 (organization) => organization === field.value
                               )
                             : "Escolha a organização"}
@@ -141,7 +149,7 @@ export function EditEditionForm({ edition }: { edition: Edition }) {
                       <CommandList>
                         <CommandEmpty>Organização não encontrada.</CommandEmpty>
                         <CommandGroup>
-                          {ORGANIZATIONS.map((organization) => (
+                          {organizations.map((organization) => (
                             <CommandItem
                               value={organization}
                               key={organization}
@@ -205,6 +213,36 @@ export function EditEditionForm({ edition }: { edition: Edition }) {
                     />
                   </PopoverContent>
                 </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
+            name="champion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Campeão</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Jhones e Mineiro" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="runnerUp"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vice-campeão</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="W e MCharles" />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -302,49 +340,10 @@ export function EditEditionForm({ edition }: { edition: Edition }) {
           />
 
           <Button type="submit" className="w-full md:w-min">
-            Salvar
+            Cadastrar
           </Button>
         </form>
       </Form>
     </div>
   );
 }
-
-const ORGANIZATIONS = [
-  "Batalha da Casa Coletiva",
-  "Batalha da DC (Tefé)",
-  "Batalha da Diversidade",
-  "Batalha da God",
-  "Batalha da Malta",
-  "Batalha da Maltinha",
-  "Batalha da Matinha",
-  "Batalha da New City",
-  "Batalha da Norte",
-  "Batalha da Onça",
-  "Batalha da Praia",
-  "Batalha da UDV",
-  "Batalha da União",
-  "Batalha da Zaik (Tefé)",
-  "Batalha do BK",
-  "Batalha do Brooklyn",
-  "Batalha do Conekta",
-  "Batalha do Esquenta",
-  "Batalha do Lado Leste",
-  "Batalha do Leme",
-  "Batalha do Mirante (Ita)",
-  "Batalha do Mundo Novo",
-  "Batalha do Passarinho",
-  "Batalha do Santa (Tefé)",
-  "Batalha do Vale",
-  "Batalha do Vila",
-  "Batalha do VM2",
-  "Batalha dos Barés",
-  "Batalha dos Caixa Baixa",
-  "Flow de Favela",
-  "Hip Hop Delas",
-  "La Prata Prod",
-  "Movimento BDM (Tefé)",
-  "Raízes Espaço Cultural",
-  "Ringue Clandestino",
-  "Trap na Veia",
-];

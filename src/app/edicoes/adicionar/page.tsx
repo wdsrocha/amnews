@@ -7,8 +7,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Edition, getOrganizations } from "@/lib/api";
-import { EditEditionForm } from "../../../components/form";
+
 import { Separator } from "@/components/ui/separator";
+import { EditEditionForm } from "./form";
 
 export default async function Page() {
   const organizations = await getOrganizations();

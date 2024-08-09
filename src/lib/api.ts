@@ -174,8 +174,23 @@ export async function getEdition(
   };
 }
 
+// O(n^2*logn) complexity, but it's fine for now
 export async function getOrganizations(): Promise<string[]> {
   const editions = await getEditions();
-
-  return editions.map((edition) => edition.organization);
+  return editions
+    .reduce((acc: string[], edition: Edition) => {
+      if (!acc.includes(edition.organization)) {
+        acc.push(edition.organization);
+      }
+      return acc;
+    }, [])
+    .sort((a: string, b: string) => {
+      const countA = editions.filter(
+        (edition: Edition) => edition.organization === a
+      ).length;
+      const countB = editions.filter(
+        (edition: Edition) => edition.organization === b
+      ).length;
+      return countB - countA;
+    });
 }

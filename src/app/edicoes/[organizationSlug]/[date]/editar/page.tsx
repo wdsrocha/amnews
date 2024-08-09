@@ -64,7 +64,7 @@ export default async function Page({
         <h1 className="font-semibold">Editar Edição</h1>
         <Separator />
       </div>
-      <EditEditionForm edition={edition} />
+      <EditEditionForm edition={edition} organizations={organizations} />
     </main>
   );
 }
