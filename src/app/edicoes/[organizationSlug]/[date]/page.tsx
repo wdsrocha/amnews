@@ -41,7 +41,7 @@ export default async function Page({
 
   if (!edition) {
     return (
-      <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
+      <>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -58,12 +58,12 @@ export default async function Page({
           <Separator />
         </div>
         <div className="text-sm">Edição não encontrada</div>
-      </main>
+      </>
     );
   }
 
   return (
-    <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -224,6 +224,6 @@ export default async function Page({
           </CardContent>
         </Card> */}
       </div>
-    </main>
+    </>
   );
 }

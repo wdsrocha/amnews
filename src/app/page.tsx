@@ -16,7 +16,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen flex justify-center items-center">
+    <div className="min-h-screen flex justify-center items-center">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Entrar</CardTitle>
@@ -28,6 +28,6 @@ export default async function Home() {
           <SignIn />
         </CardFooter>
       </Card>
-    </main>
+    </div>
   );
 }

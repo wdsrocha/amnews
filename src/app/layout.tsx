@@ -36,7 +36,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          {children}
+          <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
+            {children}
+          </main>
           <Toaster richColors />
         </ThemeProvider>
       </body>

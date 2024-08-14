@@ -15,7 +15,7 @@ export default async function Page() {
   const organizations = await getOrganizations();
 
   return (
-    <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -32,6 +32,6 @@ export default async function Page() {
         <Separator />
       </div>
       <EditEditionForm edition={{} as Edition} organizations={organizations} />
-    </main>
+    </>
   );
 }

@@ -15,22 +15,18 @@ export default async function Page({
 
   if (!editions.length) {
     return (
-      <main className="px-4 md:px-6 flex flex-col gap-y-4 pb-4 md:pb-6">
-        <div className="flex flex-col gap-y-2">
-          <h1 className="font-semibold">Nenhuma edição encontrada</h1>
-        </div>
-      </main>
+      <div className="flex flex-col gap-y-2">
+        <h1 className="font-semibold">Nenhuma edição encontrada</h1>
+      </div>
     );
   }
 
   return (
-    <main className="px-4 md:px-6 flex flex-col gap-y-4">
-      <DataTable
-        title="Edições"
-        description={editions[0].organization}
-        columns={columns}
-        data={editions}
-      />
-    </main>
+    <DataTable
+      title="Edições"
+      description={editions[0].organization}
+      columns={columns}
+      data={editions}
+    />
   );
 }
