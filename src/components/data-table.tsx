@@ -26,7 +26,6 @@ import { useState } from "react";
 import { DataTablePagination } from "./ui/data-table-pagination";
 import { DataTableColumnVisibility } from "./ui/data-table-column-visibility";
 import { buttonVariants } from "./ui/button";
-import { FloatingActionButton } from "./floating-action-button";
 import { CirclePlusIcon } from "lucide-react";
 import Link from "next/link";
 import { cn, slugify } from "@/lib/utils";
