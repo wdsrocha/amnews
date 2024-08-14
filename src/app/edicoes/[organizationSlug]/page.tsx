@@ -1,17 +1,20 @@
-import { getEditions } from "@/lib/api";
+import { Edition, getEditions } from "@/lib/api";
 import { DataTable } from "../../../components/data-table";
 import { columns } from "./../columns";
 import { slugify } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 
 export default async function Page({
   params,
 }: {
   params: { organizationSlug: string };
 }) {
-  const editions = (await getEditions()).filter(
-    (edition) => slugify(edition.organization) === params.organizationSlug
-  );
+  const editions = (await getEditions())
+    .filter(
+      (edition) => slugify(edition.organization) === params.organizationSlug
+    )
+    .sort((a: Edition, b: Edition) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
 
   if (!editions.length) {
     return (

@@ -129,23 +129,20 @@ export async function getEditions(): Promise<Edition[]> {
     return [];
   }
 
-  const editions = spreadsheets.data.values
-    .map((row: string[]): Edition => {
-      return {
-        date: row[0],
-        organization: row[1],
-        champion: row[2],
-        runnerUp: row[3],
-        editionNumber: row[4],
-        title: row[5],
-        mode: row[6],
-        judges: row[7],
-        instagramPost: row[8],
-      };
-    })
-    .sort((a: Edition, b: Edition) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
+  // NEVER SORT THIS ARRAY HERE
+  const editions = spreadsheets.data.values.map((row: string[]): Edition => {
+    return {
+      date: row[0],
+      organization: row[1],
+      champion: row[2],
+      runnerUp: row[3],
+      editionNumber: row[4],
+      title: row[5],
+      mode: row[6],
+      judges: row[7],
+      instagramPost: row[8],
+    };
+  });
 
   return editions;
 }
