@@ -80,18 +80,15 @@ export function DataTable<TData, TValue>({
           <div className="flex items-center gap-x-2">
             <DataTableColumnVisibility table={table} />
             <Link
-              href="/edicoes/novo"
+              href="/edicoes/adicionar"
               className={cn(
                 buttonVariants({ variant: "default", size: "sm" }),
-                "hidden md:flex items-center gap-x-1"
+                "flex items-center gap-x-1"
               )}
             >
               <CirclePlusIcon className="h-3 w-3" />
-              <span>Adicionar edição</span>
+              <span className="md:flex hidden">Adicionar edição</span>
             </Link>
-            <div className="md:hidden flex fixed">
-              <FloatingActionButton />
-            </div>
           </div>
         </div>
         <Table className="text-xs text-nowrap">

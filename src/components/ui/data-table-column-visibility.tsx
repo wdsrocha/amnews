@@ -28,7 +28,7 @@ export function DataTableColumnVisibility<TData>({
           className={cn(className, "flex items-center gap-x-1")}
         >
           <TablePropertiesIcon className="w-3 h-3" />
-          <span className="hidden sm:inline">Colunas</span>
+          <span className="hidden md:inline">Colunas</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
